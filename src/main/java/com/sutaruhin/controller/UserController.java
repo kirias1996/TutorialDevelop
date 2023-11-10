@@ -5,6 +5,8 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -36,7 +38,10 @@ public class UserController {
 	}
 
 	@PostMapping("/register")
-	public String postRegister(User user) {
+	public String postRegister(@Validated User user,BindingResult res, Model model) {
+		if(res.hasErrors()) {
+			return getRegister(user);
+		}
 		service.saveUser(user);
 
 		return "redirect:/user/list";
