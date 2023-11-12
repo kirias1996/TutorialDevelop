@@ -7,7 +7,10 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
+import javax.persistence.PreRemove;
 import javax.persistence.Table;
+import javax.transaction.Transactional;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -51,4 +54,14 @@ public class User {
 	@Length(max=50)
 	private String email;
 
+	@OneToOne(mappedBy = "user")
+	private Authentication authentication;
+
+	@PreRemove
+	@Transactional
+	private void preRemove() {
+		if(authentication!=null) {
+			authentication.setUser(null);
+		}
+	}
 }
